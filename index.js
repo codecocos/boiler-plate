@@ -26,6 +26,7 @@ app.post('/register', (req, res) => {
   //그것들을 데이터 베이스에 넣어준다.
 
   const user = new User(req.body)
+
   //save(): 몽고디비 메소드
   user.save((err, userInfo) => {
     if (err) return res.json({ success: false, err })
