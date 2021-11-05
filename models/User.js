@@ -33,7 +33,7 @@ const userShcema = mongoose.Schema({
   }
 })
 
-//비밀번호를 저장하기 전에 함수 실행.
+//비밀번호를 저장하기 전에 함수 실행
 userShcema.pre('save', function (next) {
   var user = this;
 
