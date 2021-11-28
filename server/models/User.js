@@ -74,23 +74,36 @@ userShcema.methods.generateToken = function (cb) {
 
   //jsonwebToken을 이용해서 token을 생성하기
   var token = jwt.sign(user._id.toHexString(), 'secretToken')
-  // user._id+'secretToken' = token
-  // ->
-  // 'secretToken' -> user._id
+  // 토큰생성 : user._id+'secretToken' = token 
+  //    ▼
+  // 토큰값을 넣으면 유저아이디가 나옴 : 'secretToken' -> user._id
 
   user.token = token
   user.save(function (err, user) {
     if (err) return cb(err)
-    //에러는 없고, 유저 부분 전달
+    //에러는 없고, 유저 부분 전달 : index.js 로
     cb(null, user)
   })
 }
 
-userShcema.statics.findByToken = function token(db) {
+userShcema.statics.findByToken = function (token, cb) {
   var user = this;
 
+
+
   //토큰을 decode한다.
-   
+  jwt.verify(token, 'secretToken', function (err, decoded) {
+    //유저아이디를 이용해서 유저를 찾은 다음에
+    //클라이언트에서 가져온 token과 DB에 보관된 토큰이 일치하는 지 확인
+
+    user.findOne({ "_id": decoded, "token": token }, function (err, user) {
+
+      if (err) return cb(err);
+      //에러가 없으면, 유저 정보를 전달 
+      cb(null, user);
+    })
+  })
+
 
 }
 //모델이름,스키마
